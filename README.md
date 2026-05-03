@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# projeto-padaria
+Projeto web front-end de um e-commerce para padarias construído com o framework Next.js.
 
-## Getting Started
+## Descrição do Contexto do Projeto
+Este repositório contém a **Entrega 01** do projeto de desenvolvimento de um Sistema de Padaria web. O objetivo do sistema é modernizar o atendimento e facilitar a compra dos clientes, permitindo que eles visualizem o catálogo de pães, bolos e doces, gerenciem um carrinho de compras e realizem pedidos de forma rápida e intuitiva. 
 
-First, run the development server:
+## O que foi desenvolvido
+- **Diagrama de Casos de Uso:** Mapeamento em UML das principais funcionalidades e interações dos atores com o sistema.<br>
+  [Link para o diagrama de casos de uso](https://lucid.app/lucidchart/a4de83ce-da59-4fe9-b949-c9563e08cdb9/edit?viewport_loc=-1495%2C-275%2C1303%2C638%2C0_0&invitationId=inv_ebacfdba-7426-46bf-a0d4-0d678373bc79)
+- **Prototipação em Baixa Fidelidade:** Wireframes criados no Figma estruturando o esqueleto visual das páginas.<br>
+  [Link para o design](https://www.figma.com/design/duQLSR4kQgvqdHLNpeyX8Q/ProjetoPadaria?node-id=0-1&t=y89OXRHP66XlRrmJ-1) | 
+  [Link para o protótipo](https://www.figma.com/proto/duQLSR4kQgvqdHLNpeyX8Q/ProjetoPadaria?node-id=0-1&t=y89OXRHP66XlRrmJ-1)
+- **Front-end Funcional:** Implementação de 8 telas com navegação funcional entre elas.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Tecnologias e Ferramentas Utilizadas
+- **Framework Web:** Next.js
+- **Linguagem:** TypeScript / HTML / CSS
+- **Prototipação:** Figma
+- **Modelagem:** Diagrama de Casos de Uso
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Telas Implementadas
+1. **Home:** Tela inicial e principal do sistema.
+2. **Catálogo de Produtos:** Catálogo dos itens disponíveis na padaria.
+3. **Detalhes do Produto:** Visão detalhada de um item para adição ao carrinho.
+4. **Carrinho:** Resumo dos itens selecionados e subtotal.
+5. **Login/Autenticação:** Tela de acesso/login do usuário.
+6. **Checkout:** Tela de confirmação de endereço e escolha do método de pagamento.
