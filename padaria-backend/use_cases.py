@@ -2,7 +2,8 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from models import Usuario, Produto, Carrinho, ItemCarrinho, Pedido, ItemPedido, Pagamento
 from models import UsuarioCreate, ProdutoCreate, ItemCarrinhoInput, FinalizarPedidoInput, LoginInput, UsuarioUpdate
-
+ 
+ 
 def cadastrar_usuario_uc(usuario: UsuarioCreate, db: Session):
     if db.query(Usuario).filter(Usuario.email == usuario.email).first():
         raise HTTPException(status_code=400, detail="E-mail já cadastrado")
@@ -11,23 +12,21 @@ def cadastrar_usuario_uc(usuario: UsuarioCreate, db: Session):
     db.add(novo_usuario)
     db.commit()
     db.refresh(novo_usuario)
-    
-    if novo_usuario.tipo_usuario.lower() == "cliente":
-        db.add(Carrinho(cliente_id=novo_usuario.id))
-        db.commit()
+    db.add(Carrinho(cliente_id=novo_usuario.id))
+    db.commit()
         
     return novo_usuario
-
+ 
 def listar_produtos_uc(db: Session):
     return db.query(Produto).all()
-
+ 
 def adicionar_produto_uc(produto: ProdutoCreate, db: Session):
     novo = Produto(**produto.dict())
     db.add(novo)
     db.commit()
     db.refresh(novo)
     return novo
-
+ 
 def finalizar_pedido_uc(dados: FinalizarPedidoInput, db: Session):
     carrinho = db.query(Carrinho).filter(Carrinho.cliente_id == dados.cliente_id).first()
     if not carrinho or not carrinho.itens:
@@ -63,7 +62,7 @@ def finalizar_pedido_uc(dados: FinalizarPedidoInput, db: Session):
     db.commit()
     db.refresh(novo_pedido)
     return novo_pedido
-
+ 
 def editar_produto_uc(id: int, produto_atualizado: ProdutoCreate, db: Session):
     produto = db.query(Produto).filter(Produto.id == id).first()
     if not produto:
@@ -73,7 +72,7 @@ def editar_produto_uc(id: int, produto_atualizado: ProdutoCreate, db: Session):
     db.commit()
     db.refresh(produto)
     return produto
-
+ 
 def deletar_produto_uc(id: int, db: Session):
     produto = db.query(Produto).filter(Produto.id == id).first()
     if not produto:
@@ -81,11 +80,9 @@ def deletar_produto_uc(id: int, db: Session):
     db.delete(produto)
     db.commit()
     return {"detail": "Produto removido com sucesso"}
-
+ 
 def adicionar_item_carrinho_uc(cliente_id: int, item_in: ItemCarrinhoInput, db: Session):
-    carrinho = db.query(Carrinho).filter(Carrinho.cliente_id == cliente_id).first()
-    if not carrinho:
-        raise HTTPException(status_code=404, detail="Carrinho não encontrado para este cliente")
+    carrinho = obter_ou_criar_carrinho(cliente_id, db)
     
     produto = db.query(Produto).filter(Produto.id == item_in.produto_id).first()
     if not produto or produto.estoque < item_in.quantidade:
@@ -104,7 +101,7 @@ def adicionar_item_carrinho_uc(cliente_id: int, item_in: ItemCarrinhoInput, db: 
         
     db.commit()
     return {"detail": "Produto adicionado ao carrinho"}
-
+ 
 def visualizar_historico_uc(cliente_id: int, db: Session):
     pedidos = db.query(Pedido).filter(Pedido.cliente_id == cliente_id).order_by(Pedido.data_criacao.desc()).all()
     
@@ -128,13 +125,13 @@ def visualizar_historico_uc(cliente_id: int, db: Session):
         })
         
     return historico_formatado
-
+ 
 def buscar_produto_uc(id: int, db: Session):
     produto = db.query(Produto).filter(Produto.id == id).first()
     if not produto:
         raise HTTPException(status_code=404, detail="Produto não encontrado")
     return produto
-
+ 
 def autenticar_usuario_uc(dados: LoginInput, db: Session):
     usuario = db.query(Usuario).filter(Usuario.email == dados.email, Usuario.senha == dados.senha).first()
     if not usuario:
@@ -147,11 +144,9 @@ def autenticar_usuario_uc(dados: LoginInput, db: Session):
         "telefone": usuario.telefone,
         "endereco_entrega": usuario.endereco_entrega
     }
-
+ 
 def ver_carrinho_uc(cliente_id: int, db: Session):
-    carrinho = db.query(Carrinho).filter(Carrinho.cliente_id == cliente_id).first()
-    if not carrinho:
-        raise HTTPException(status_code=404, detail="Carrinho não encontrado")
+    carrinho = obter_ou_criar_carrinho(cliente_id, db)
     
     itens_formatados = []
     for item in carrinho.itens:
@@ -165,7 +160,7 @@ def ver_carrinho_uc(cliente_id: int, db: Session):
         })
         
     return {"carrinho_id": carrinho.id, "itens": itens_formatados}
-
+ 
 def editar_usuario_uc(id: int, dados: UsuarioUpdate, db: Session):
     usuario = db.query(Usuario).filter(Usuario.id == id).first()
     if not usuario:
@@ -187,7 +182,7 @@ def editar_usuario_uc(id: int, dados: UsuarioUpdate, db: Session):
         "telefone": usuario.telefone,
         "endereco_entrega": usuario.endereco_entrega
     }
-
+ 
 def remover_item_carrinho_uc(item_id: int, db: Session):
     item = db.query(ItemCarrinho).filter(ItemCarrinho.id == item_id).first()
     if not item:
@@ -196,12 +191,21 @@ def remover_item_carrinho_uc(item_id: int, db: Session):
     db.delete(item)
     db.commit()
     return {"mensagem": "Item removido com sucesso"}
-
+ 
 def limpar_carrinho_uc(cliente_id: int, db: Session):
-    carrinho = db.query(Carrinho).filter(Carrinho.cliente_id == cliente_id).first()
-    if not carrinho:
-        raise HTTPException(status_code=404, detail="Carrinho não encontrado")
+    carrinho = obter_ou_criar_carrinho(cliente_id, db)
     
     db.query(ItemCarrinho).filter(ItemCarrinho.carrinho_id == carrinho.id).delete()
     db.commit()
     return {"mensagem": "Carrinho esvaziado com sucesso"}
+
+def obter_ou_criar_carrinho(cliente_id: int, db: Session):
+    """Retorna o carrinho do usuário; se ainda não existir, cria um na hora.
+    É isto que evita o erro 'Carrinho não encontrado' para qualquer usuário."""
+    carrinho = db.query(Carrinho).filter(Carrinho.cliente_id == cliente_id).first()
+    if not carrinho:
+        carrinho = Carrinho(cliente_id=cliente_id)
+        db.add(carrinho)
+        db.commit()
+        db.refresh(carrinho)
+    return carrinho
