@@ -55,6 +55,117 @@ Cumprindo os requisitos da segunda etapa do projeto, o sistema evoluiu de um pro
 7. **Perfil do Usuário (Entrega 02):** 
 8. **Histórico de Pedidos (Entrega 02):** 
 
+## Como executar o projeto?
+
+**Pré-requisitos**
+ 
+Antes de começar, certifique-se de ter instalado na sua máquina:
+ 
+- [Python](https://www.python.org/downloads/)
+- [Node.js](https://nodejs.org/)
+- [PostgreSQL](https://www.postgresql.org/download/)
+- [Git](https://git-scm.com/)
+---
+ 
+## 1. Clonando o repositório
+ 
+```bash
+git clone <URL-do-repositorio>
+cd projeto-padaria
+```
+ 
+---
+ 
+## 2. Configurando o banco de dados
+ 
+1. Crie um banco de dados chamado **`padaria_db`**.
+2. No arquivo `models.py`, dentro da pasta do backend, coloque a sua senha do seu PostgreSQL local:
+```python
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:SUA_SENHA@localhost:5432/padaria_db"
+```
+---
+ 
+## 3. Executando o Backend (FastAPI)
+ 
+Abra um terminal na pasta do backend:
+ 
+```bash
+cd padaria-backend
+```
+ 
+### 3.1. Criar e ativar o ambiente virtual
+ 
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+ 
+### 3.2. Instalar as dependências
+ 
+```bash
+pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic
+```
+ 
+### 3.3. Popular o banco com dados iniciais
+ 
+```bash
+python initial_data.py
+```
+ 
+Esse comando cria as tabelas e insere usuários e produtos de teste no banco `padaria_db`.
+ 
+### 3.4. Subir o backend
+ 
+```bash
+uvicorn main:app --reload
+```
+ 
+O backend estará disponível em `http://127.0.0.1:8000`.
+Você pode acessar `http://127.0.0.1:8000/docs` para ver a documentação interativa da API.
+ 
+---
+ 
+## 4. Executando o Frontend (Next.js)
+ 
+Em um **outro terminal** (deixe o backend rodando), navegue até a pasta do frontend:
+ 
+```bash
+cd padaria-frontend
+```
+ 
+### 4.1. Instalar as dependências
+ 
+```bash
+npm install
+```
+ 
+### 4.2. Subir o frontend
+ 
+```bash
+npm run dev
+```
+ 
+O frontend estará disponível em `http://localhost:3000`.
+ 
+---
+ 
+## 5. Acessando o sistema
+ 
+Com o backend e o frontend rodando, acesse no navegador:
+ 
+```
+http://localhost:3000/login
+```
+ 
+### Login do cliente teste
+ 
+| Campo | Valor |
+|-------|-------|
+| E-mail | `cliente@padaria.com` |
+| Senha | `123` |
+ 
+---
+ 
 ## Autores
 - José Fernando Avelino
 - João Pedro Holanda
