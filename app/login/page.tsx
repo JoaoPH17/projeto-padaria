@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Login() {
   const router = useRouter();
@@ -84,6 +85,9 @@ export default function Login() {
         >
           {carregando ? "Autenticando..." : "Entrar"}
         </button>
+
+        <span style={{ color: '#666' }}>Ainda não tem conta? </span>
+        <Link href="/cadastro" style={{ color: '#ff9800', textDecoration: 'none', fontWeight: 'bold' }}>Crie uma agora!</Link>
       </form>
     </div>
   );

@@ -52,8 +52,10 @@ Cumprindo os requisitos da segunda etapa do projeto, o sistema evoluiu de um pro
 4. **Carrinho:** 
 5. **Login/Autenticação:** 
 6. **Checkout:** 
-7. **Perfil do Usuário (Entrega 02):** 
-8. **Histórico de Pedidos (Entrega 02):** 
+7. **Perfil do Usuário** 
+8. **Histórico de Pedidos**
+9. **Casdastro**
+10. **Página do Administrador**
 
 ## Como executar o projeto?
 
