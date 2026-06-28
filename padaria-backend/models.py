@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:1234@localhost:5432/padaria_db"
+SQLALCHEMY_DATABASE_URL = "postgresql://neondb_owner:npg_J5vk4RcGHdDl@ep-silent-meadow-aio0kkqv-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
