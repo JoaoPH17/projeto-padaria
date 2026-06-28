@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
 export default function Perfil() {
   const router = useRouter();
   const [cliente, setCliente] = useState<any>(null);
@@ -44,7 +46,7 @@ export default function Perfil() {
     };
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/usuarios/${cliente.id}`, {
+      const res = await fetch(`${API_URL}/usuarios/${cliente.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dadosAtualizados)

@@ -12,6 +12,8 @@ interface Produto {
   estoque: number;
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
 export default function AdminPanel() {
   const router = useRouter();
   const [produtos, setProdutos] = useState<Produto[]>([]);
@@ -43,7 +45,7 @@ export default function AdminPanel() {
 
   const carregarProdutos = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/produtos/");
+      const res = await fetch(`${API_URL}/produtos/`);
       if (res.ok) {
         const data = await res.json();
         setProdutos(data);
@@ -68,8 +70,8 @@ export default function AdminPanel() {
     };
 
     const url = editandoId 
-      ? 'http://127.0.0.1:8000/produtos/${editandoId}'
-      : "http://127.0.0.1:8000/produtos/";
+      ? `${API_URL}/produtos/${editandoId}`
+      : `${API_URL}/produtos/`;
       
     const method = editandoId ? "PUT" : "POST";
 
@@ -78,7 +80,7 @@ export default function AdminPanel() {
         method: method,
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": 'Bearer ${token}'
+          "Authorization": `Bearer ${token}` // Corrigido com crases
         },
         body: JSON.stringify(produtoData)
       });
@@ -101,10 +103,11 @@ export default function AdminPanel() {
     const token = localStorage.getItem("tokenPadaria");
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/produtos/${id}`, {
+      // 4. Trocamos o link fixo pela variável
+      const res = await fetch(`${API_URL}/produtos/${id}`, {
         method: "DELETE",
         headers: {
-          "Authorization": 'Bearer ${token}'
+          "Authorization": `Bearer ${token}` // Corrigido com crases
         }
       });
 

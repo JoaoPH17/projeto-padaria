@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
 interface ItemPedido {
   nome_produto: string;
   quantidade: number;
@@ -33,7 +35,7 @@ export default function HistoricoPedidos() {
 
     const usuario = JSON.parse(usuarioSalvo);
 
-    fetch(`http://127.0.0.1:8000/pedidos/${usuario.id}/historico`)
+    fetch(`${API_URL}/pedidos/${usuario.id}/historico`)
       .then(res => res.json())
       .then(data => {
         setPedidos(data);

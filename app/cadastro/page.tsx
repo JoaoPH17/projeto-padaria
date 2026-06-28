@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
 export default function Cadastro() {
   const router = useRouter();
   const [nome, setNome] = useState("");
@@ -13,6 +15,7 @@ export default function Cadastro() {
   const [endereco, setEndereco] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [carregando, setCarregando] = useState(false);
+
   const fazerCadastro = async (e: React.FormEvent) => {
     e.preventDefault();
     setCarregando(true);
@@ -28,7 +31,7 @@ export default function Cadastro() {
     };
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/usuarios/", {
+      const res = await fetch(`${API_URL}/usuarios/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(novoUsuario)
