@@ -7,6 +7,7 @@ from auth import criar_token
 from fastapi import HTTPException
 from models import Usuario
 from auth import verificar_admin
+from initial_data import popular_banco
 import use_cases
 
 app = FastAPI(title="API da Padaria")
@@ -19,8 +20,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Cria as tabelas se não existirem
-Base.metadata.create_all(bind=engine)
+@app.on_event("startup")
+def startup_event():
+    Base.metadata.create_all(bind=engine)
+    print("Tabelas verificadas/criadas com sucesso!")
 
 def get_db():
     db = SessionLocal()
