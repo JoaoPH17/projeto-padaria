@@ -3,6 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from models import SessionLocal, engine, Base
 from models import ProdutoCreate, UsuarioCreate, FinalizarPedidoInput, ItemCarrinhoInput, LoginInput, UsuarioUpdate
+from auth import criar_token
+from fastapi import HTTPException
+from models import Usuario
+from auth import verificar_admin
 import use_cases
 
 app = FastAPI(title="API da Padaria")
@@ -31,8 +35,24 @@ def criar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     return use_cases.cadastrar_usuario_uc(usuario, db)
 
 @app.post("/login/")
-def fazer_login(dados: LoginInput, db: Session = Depends(get_db)):
-    return use_cases.autenticar_usuario_uc(dados, db)
+def login(email: str, senha: str, db: Session = Depends(get_db)):
+    usuario = db.query(Usuario).filter(Usuario.email == email, Usuario.senha == senha).first()
+    
+    if not usuario:
+        raise HTTPException(status_code=401, detail="Credenciais incorretas")
+
+    dados_token = {
+        "sub": str(usuario.id),
+        "tipo_usuario": usuario.tipo_usuario
+    }
+    
+    token_jwt = criar_token(dados_token)
+    
+    return {
+        "access_token": token_jwt, 
+        "token_type": "bearer",
+        "usuario": {"nome": usuario.nome, "tipo": usuario.tipo_usuario}
+    }
 
 @app.put("/usuarios/{id}")
 def editar_usuario(id: int, dados: UsuarioUpdate, db: Session = Depends(get_db)):
@@ -43,9 +63,9 @@ def editar_usuario(id: int, dados: UsuarioUpdate, db: Session = Depends(get_db))
 def listar_produtos(db: Session = Depends(get_db)):
     return use_cases.listar_produtos_uc(db)
 
-@app.post("/produtos/", status_code=status.HTTP_201_CREATED)
-def criar_produto(produto: ProdutoCreate, db: Session = Depends(get_db)):
-    return use_cases.adicionar_produto_uc(produto, db)
+@app.post("/produtos/")
+def criar_produto(produto: ProdutoCreate, db: Session = Depends(get_db), admin_payload: dict = Depends(verificar_admin)):
+    return use_cases.criar_produto_uc(produto, db)
 
 @app.get("/produtos/{id}")
 def buscar_produto(id: int, db: Session = Depends(get_db)):
@@ -61,7 +81,7 @@ def editar_produto(id: int, produto_atualizado: ProdutoCreate, db: Session = Dep
     return use_cases.editar_produto_uc(id, produto_atualizado, db)
 
 @app.delete("/produtos/{id}")
-def deletar_produto(id: int, db: Session = Depends(get_db)):
+def deletar_produto(id: int, db: Session = Depends(get_db), admin_payload: dict = Depends(verificar_admin)):
     return use_cases.deletar_produto_uc(id, db)
 
 # --- ROTAS DE CARRINHO E HISTÓRICO ---

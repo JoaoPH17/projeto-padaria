@@ -24,11 +24,12 @@ export default function Login() {
       });
 
       if (resposta.ok) {
-        const usuario = await resposta.json();
+        const dadosUsuario = await resposta.json();
         
-        localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
+        localStorage.setItem("tokenPadaria", dadosUsuario.access_token);
+        localStorage.setItem("usuarioLogado", JSON.stringify(dadosUsuario.usuario));
 
-        if (usuario.tipo_usuario.toLowerCase() === "administrador") {
+        if (dadosUsuario.tipo_usuario.toLowerCase() === "administrador") {
           router.push("/admin"); 
         } else {
           router.push("/catalogo");

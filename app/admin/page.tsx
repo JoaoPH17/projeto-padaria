@@ -24,14 +24,16 @@ export default function AdminPanel() {
 
   useEffect(() => {
     const usuarioSalvo = localStorage.getItem("usuarioLogado");
-    if (!usuarioSalvo) {
+    const token = localStorage.getItem("tokenPadaria");
+    
+    if (!usuarioSalvo || !token) {
       router.push("/login");
       return;
     }
     
     const usuario = JSON.parse(usuarioSalvo);
     if (usuario.tipo_usuario !== "Administrador") {
-      alert("Acesso negado! Área restrita para administradores.");
+      alert("Área restrita para administradores!");
       router.push("/catalogo");
       return;
     }
@@ -56,6 +58,8 @@ export default function AdminPanel() {
   const salvarProduto = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    const token = localStorage.getItem("tokenPadaria");
+    
     const produtoData = {
       nome,
       descricao,
@@ -64,7 +68,7 @@ export default function AdminPanel() {
     };
 
     const url = editandoId 
-      ? `http://127.0.0.1:8000/produtos/${editandoId}` 
+      ? 'http://127.0.0.1:8000/produtos/${editandoId}'
       : "http://127.0.0.1:8000/produtos/";
       
     const method = editandoId ? "PUT" : "POST";
@@ -72,7 +76,10 @@ export default function AdminPanel() {
     try {
       const res = await fetch(url, {
         method: method,
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": 'Bearer ${token}'
+        },
         body: JSON.stringify(produtoData)
       });
 
@@ -81,7 +88,7 @@ export default function AdminPanel() {
         limparFormulario();
         carregarProdutos();
       } else {
-        alert("Erro ao salvar o produto.");
+        alert("Erro ao salvar o produto. Verifique suas permissões.");
       }
     } catch (error) {
       alert("Erro de conexão com o servidor.");
@@ -90,16 +97,21 @@ export default function AdminPanel() {
 
   const deletarProduto = async (id: number) => {
     if (!window.confirm("Tem certeza que deseja excluir este produto?")) return;
+    
+    const token = localStorage.getItem("tokenPadaria");
 
     try {
       const res = await fetch(`http://127.0.0.1:8000/produtos/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+          "Authorization": 'Bearer ${token}'
+        }
       });
 
       if (res.ok) {
-        setProdutos(produtos.filter(p => p.id !== id)); // Remove da tela na hora
+        setProdutos(produtos.filter(p => p.id !== id));
       } else {
-        alert("Erro ao excluir. Verifique se o produto não está em algum pedido.");
+        alert("Erro ao excluir. Verifique sua permissão.");
       }
     } catch (error) {
       alert("Erro de conexão com o servidor.");
