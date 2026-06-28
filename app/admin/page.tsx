@@ -12,7 +12,7 @@ interface Produto {
   estoque: number;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-padaria-i3yu.onrender.com";
 
 export default function AdminPanel() {
   const router = useRouter();
@@ -80,7 +80,7 @@ export default function AdminPanel() {
         method: method,
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}` // Corrigido com crases
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(produtoData)
       });
@@ -107,7 +107,7 @@ export default function AdminPanel() {
       const res = await fetch(`${API_URL}/produtos/${id}`, {
         method: "DELETE",
         headers: {
-          "Authorization": `Bearer ${token}` // Corrigido com crases
+          "Authorization": `Bearer ${token}`
         }
       });
 
