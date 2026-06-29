@@ -91,7 +91,7 @@ export default function Cadastro() {
         </form>
 
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <span style={{ color: '#666' }}>Já tem uma conta? </span>
+          <span style={{ color: '#ff9800' }}>Já tem uma conta? </span>
           <Link href="/login" style={{ color: '#1976d2', textDecoration: 'none', fontWeight: 'bold' }}>
             Faça Login
           </Link>

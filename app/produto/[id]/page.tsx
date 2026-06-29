@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -10,6 +11,7 @@ interface Produto {
   descricao: string;
   preco: number;
   estoque: number;
+  imagem_url?: string;
 }
 
 export default function ProdutoDetalhes() {
@@ -77,17 +79,43 @@ export default function ProdutoDetalhes() {
       <Link href="/catalogo" style={{ textDecoration: 'none', color: '#ff9800' }}>← Voltar ao Catálogo</Link>
       
       <div style={{ border: '1px solid #eee', padding: '30px', marginTop: '20px', borderRadius: '8px' }}>
-        <h1 style={{ marginTop: 0 }}>{produto.nome}</h1>
-        <p style={{ color: '#555', lineHeight: '1.6' }}>{produto.descricao}</p>
-        <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#333' }}>
-          R$ {produto.preco.toFixed(2)}
-        </p>
-        <p style={{ fontSize: '0.9rem', color: '#888' }}>
-          Disponível: {produto.estoque} un
-        </p>
+
+        <div style={{ display: 'flex', gap: '25px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+
+          
+          {produto.imagem_url && (
+            <div style={{
+              position: 'relative',
+              width: '220px',
+              height: '220px',
+              borderRadius: '8px',
+              overflow: 'hidden',
+              flexShrink: 0
+            }}>
+              <Image
+                src={produto.imagem_url}
+                alt={produto.nome}
+                fill
+                style={{ objectFit: 'cover' }}
+              />
+            </div>
+          )}
+
+          <div style={{ flex: 1, minWidth: '200px' }}>
+            <h1 style={{ marginTop: 0 }}>{produto.nome}</h1>
+            <p style={{ color: '#555', lineHeight: '1.6' }}>{produto.descricao}</p>
+            <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#333' }}>
+              R$ {produto.preco.toFixed(2)}
+            </p>
+            <p style={{ fontSize: '0.9rem', color: '#888' }}>
+              Disponível: {produto.estoque} un
+            </p>
+          </div>
+
+        </div>
 
         {mensagem && (
-          <div style={{ padding: '10px', marginBottom: '15px', borderRadius: '4px', background: mensagem.includes('Erro') ? '#ffebee' : '#e8f5e9', color: mensagem.includes('Erro') ? '#c62828' : '#2e7d32' }}>
+          <div style={{ padding: '10px', marginTop: '20px', marginBottom: '15px', borderRadius: '4px', background: mensagem.includes('Erro') ? '#ffebee' : '#e8f5e9', color: mensagem.includes('Erro') ? '#c62828' : '#2e7d32' }}>
             {mensagem}
           </div>
         )}

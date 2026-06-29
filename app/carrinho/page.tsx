@@ -110,7 +110,7 @@ export default function Carrinho() {
               <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee', padding: '15px 0' }}>
                 <div style={{ flex: 1 }}>
                   <h3 style={{ margin: '0 0 5px 0' }}>{item.nome_produto}</h3>
-                  <p style={{ margin: 0, color: '#666', fontSize: '0.9rem' }}>
+                  <p style={{ margin: 0, color: '#757575', fontSize: '0.9rem' }}>
                     {item.quantidade}x de R$ {item.preco_unitario.toFixed(2)}
                   </p>
                 </div>

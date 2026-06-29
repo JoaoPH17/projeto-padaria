@@ -6,17 +6,26 @@ import { usePathname, useRouter } from 'next/navigation';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [logado, setLogado] = useState(false);
+  const [ehAdmin, setEhAdmin] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
     const usuarioSalvo = localStorage.getItem("usuarioLogado");
     setLogado(!!usuarioSalvo);
+
+    if (usuarioSalvo) {
+      const usuario = JSON.parse(usuarioSalvo);
+      setEhAdmin(usuario.tipo_usuario === "Administrador");
+    } else {
+      setEhAdmin(false);
+    }
   }, [pathname]);
 
   const fazerLogout = () => {
     localStorage.removeItem("usuarioLogado");
     setLogado(false);
+    setEhAdmin(false);
     router.push("/");
   };
 
@@ -28,6 +37,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div style={{ display: 'flex', gap: '1.5rem' }}>
             <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: 'bold' }}>🏠 Home</Link>
             <Link href="/catalogo" style={{ color: '#fff', textDecoration: 'none', fontWeight: 'bold' }}>🍞 Catálogo</Link>
+            {ehAdmin && (
+              <Link href="/admin" style={{ color: '#fff', textDecoration: 'none', fontWeight: 'bold' }}>⚙️ Painel Admin</Link>
+            )}
           </div>
 
           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>

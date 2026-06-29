@@ -10,6 +10,7 @@ interface Produto {
   descricao: string;
   preco: number;
   estoque: number;
+  imagem_url?: string;
 }
 
 export default function AdminPanel() {
@@ -21,6 +22,7 @@ export default function AdminPanel() {
   const [descricao, setDescricao] = useState("");
   const [preco, setPreco] = useState("");
   const [estoque, setEstoque] = useState("");
+  const [imagemUrl, setImagemUrl] = useState("");
 
   useEffect(() => {
     const usuarioSalvo = localStorage.getItem("usuarioLogado");
@@ -60,7 +62,8 @@ export default function AdminPanel() {
       nome,
       descricao,
       preco: parseFloat(preco),
-      estoque: parseInt(estoque)
+      estoque: parseInt(estoque),
+      imagem_url: imagemUrl || null
     };
 
     const url = editandoId 
@@ -112,6 +115,7 @@ export default function AdminPanel() {
     setDescricao(produto.descricao);
     setPreco(produto.preco.toString());
     setEstoque(produto.estoque.toString());
+    setImagemUrl(produto.imagem_url || "");
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -121,6 +125,7 @@ export default function AdminPanel() {
     setDescricao("");
     setPreco("");
     setEstoque("");
+    setImagemUrl("");
   };
 
   if (carregando) return <div style={{ textAlign: 'center', marginTop: '50px' }}>Carregando Painel...</div>;
@@ -140,6 +145,18 @@ export default function AdminPanel() {
           <div style={{ display: 'flex', gap: '15px' }}>
             <input required type="number" step="0.01" placeholder="Preço (Ex: 10.50)" value={preco} onChange={e => setPreco(e.target.value)} style={{ padding: '10px', flex: 1 }} />
             <input required type="number" placeholder="Estoque Atual" value={estoque} onChange={e => setEstoque(e.target.value)} style={{ padding: '10px', flex: 1 }} />
+          </div>
+          <div>
+            <input
+              type="text"
+              placeholder="Caminho da imagem (ex: /imagens/pao_frances.jpg)"
+              value={imagemUrl}
+              onChange={e => setImagemUrl(e.target.value)}
+              style={{ padding: '10px', width: '100%' }}
+            />
+            <p style={{ fontSize: '0.8rem', color: '#888', margin: '5px 0 0 0' }}>
+              Opcional. O arquivo de imagem precisa estar salvo dentro da pasta <code>public/imagens/</code> do projeto.
+            </p>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
             <button type="submit" style={{ background: '#4CAF50', color: 'white', padding: '12px', border: 'none', borderRadius: '4px', cursor: 'pointer', flex: 1 }}>

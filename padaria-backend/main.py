@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from models import SessionLocal, engine, Base
-from models import ProdutoCreate, UsuarioCreate, FinalizarPedidoInput, ItemCarrinhoInput, LoginInput, UsuarioUpdate
+from models import ProdutoCreate, UsuarioCreate, FinalizarPedidoInput, ItemCarrinhoInput, LoginInput, UsuarioUpdate, AtualizarStatusInput
 import use_cases
 
 app = FastAPI(title="API da Padaria")
@@ -55,6 +55,14 @@ def buscar_produto(id: int, db: Session = Depends(get_db)):
 @app.post("/pedidos/finalizar", status_code=status.HTTP_201_CREATED)
 def finalizar_pedido(dados: FinalizarPedidoInput, db: Session = Depends(get_db)):
     return use_cases.finalizar_pedido_uc(dados, db)
+
+@app.get("/pedidos/todos")
+def listar_todos_pedidos(db: Session = Depends(get_db)):
+    return use_cases.listar_todos_pedidos_uc(db)
+
+@app.put("/pedidos/{pedido_id}/status")
+def atualizar_status_pedido(pedido_id: int, dados: AtualizarStatusInput, db: Session = Depends(get_db)):
+    return use_cases.atualizar_status_pedido_uc(pedido_id, dados, db)
 
 @app.put("/produtos/{id}")
 def editar_produto(id: int, produto_atualizado: ProdutoCreate, db: Session = Depends(get_db)):

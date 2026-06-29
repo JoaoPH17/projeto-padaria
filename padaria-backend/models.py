@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:1234@localhost:5432/padaria_db"
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:web123@localhost:5432/padaria_db"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -28,6 +28,7 @@ class Produto(Base):
     descricao = Column(String)
     preco = Column(Float, nullable=False)
     estoque = Column(Integer, default=0)
+    imagem_url = Column(String, nullable=True)
 
 class Carrinho(Base):
     __tablename__ = "carrinhos"
@@ -53,6 +54,7 @@ class Pedido(Base):
     status = Column(String, default="Pendente")
     itens = relationship("ItemPedido", back_populates="pedido", cascade="all, delete-orphan")
     pagamento = relationship("Pagamento", uselist=False, back_populates="pedido")
+    cliente = relationship("Usuario")
 
 class ItemPedido(Base):
     __tablename__ = "itens_pedido"
@@ -78,6 +80,7 @@ class ProdutoCreate(BaseModel):
     descricao: Optional[str] = None
     preco: float
     estoque: int
+    imagem_url: Optional[str] = None
 
 class UsuarioCreate(BaseModel):
     nome: str
@@ -105,3 +108,6 @@ class UsuarioUpdate(BaseModel):
     senha: str
     telefone: str
     endereco_entrega: str
+
+class AtualizarStatusInput(BaseModel):
+    status: str

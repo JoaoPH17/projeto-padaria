@@ -132,7 +132,7 @@ Você pode acessar `http://127.0.0.1:8000/docs` para ver a documentação intera
 Em um **outro terminal** (deixe o backend rodando), navegue até a pasta do frontend:
  
 ```bash
-cd padaria-frontend
+cd app
 ```
  
 ### 4.1. Instalar as dependências

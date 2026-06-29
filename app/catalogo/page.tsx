@@ -25,7 +25,7 @@ export default async function Catalogo() {
           <div key={produto.id} style={{ border: '1px solid #eaeaea', padding: '20px', borderRadius: '8px', textAlign: 'center' }}>
             <h2>{produto.nome}</h2>
             
-            <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '10px' }}>
+            <p style={{ color: '#777777', fontSize: '0.9rem', marginBottom: '10px' }}>
               {produto.descricao}
             </p>
             
@@ -38,7 +38,7 @@ export default async function Catalogo() {
             </p>
             
             <Link href={`/produto/${produto.id}`}>
-              <button style={{ padding: '10px 20px', background: '#333', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+              <button style={{ padding: '10px 20px', background: '#ff9800', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
                 Ver Detalhes
               </button>
             </Link>

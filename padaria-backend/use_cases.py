@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from models import Usuario, Produto, Carrinho, ItemCarrinho, Pedido, ItemPedido, Pagamento
-from models import UsuarioCreate, ProdutoCreate, ItemCarrinhoInput, FinalizarPedidoInput, LoginInput, UsuarioUpdate
+from models import UsuarioCreate, ProdutoCreate, ItemCarrinhoInput, FinalizarPedidoInput, LoginInput, UsuarioUpdate, AtualizarStatusInput
  
  
 def cadastrar_usuario_uc(usuario: UsuarioCreate, db: Session):
@@ -104,7 +104,13 @@ def adicionar_item_carrinho_uc(cliente_id: int, item_in: ItemCarrinhoInput, db: 
  
 def visualizar_historico_uc(cliente_id: int, db: Session):
     pedidos = db.query(Pedido).filter(Pedido.cliente_id == cliente_id).order_by(Pedido.data_criacao.desc()).all()
-    
+    return _formatar_pedidos(pedidos)
+
+def listar_todos_pedidos_uc(db: Session):
+    pedidos = db.query(Pedido).order_by(Pedido.data_criacao.desc()).all()
+    return _formatar_pedidos(pedidos, incluir_cliente=True)
+
+def _formatar_pedidos(pedidos, incluir_cliente: bool = False):
     historico_formatado = []
     for pedido in pedidos:
         itens_formatados = []
@@ -114,17 +120,32 @@ def visualizar_historico_uc(cliente_id: int, db: Session):
                 "quantidade": item.quantidade,
                 "preco_unitario": item.preco_unitario
             })
-            
-        historico_formatado.append({
+
+        pedido_formatado = {
             "pedido_id": pedido.id,
             "data": pedido.data_criacao.strftime("%d/%m/%Y às %H:%M"),
             "valor_total": pedido.valor_total,
             "status": pedido.status,
             "metodo_pagamento": pedido.pagamento.metodo_pagamento if pedido.pagamento else "Não informado",
             "itens": itens_formatados
-        })
-        
+        }
+
+        if incluir_cliente:
+            pedido_formatado["cliente_nome"] = pedido.cliente.nome if pedido.cliente else "Cliente removido"
+
+        historico_formatado.append(pedido_formatado)
+
     return historico_formatado
+
+def atualizar_status_pedido_uc(pedido_id: int, dados: AtualizarStatusInput, db: Session):
+    pedido = db.query(Pedido).filter(Pedido.id == pedido_id).first()
+    if not pedido:
+        raise HTTPException(status_code=404, detail="Pedido não encontrado")
+
+    pedido.status = dados.status
+    db.commit()
+    db.refresh(pedido)
+    return {"detail": "Status atualizado com sucesso", "pedido_id": pedido.id, "status": pedido.status}
  
 def buscar_produto_uc(id: int, db: Session):
     produto = db.query(Produto).filter(Produto.id == id).first()

@@ -48,7 +48,7 @@ export default function Login() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '50px' }}>
       <h1>Acesse sua Conta</h1>
-      <p style={{ color: '#666', marginBottom: '20px' }}>Faça login para finalizar seu pedido.</p>
+      <p style={{ color: '#6d6d6d', marginBottom: '20px' }}>Faça login para finalizar seu pedido.</p>
 
       <form 
         onSubmit={handleLogin}
@@ -81,12 +81,12 @@ export default function Login() {
         <button 
           type="submit" 
           disabled={carregando}
-          style={{ width: '100%', padding: '12px', background: carregando ? '#999' : '#333', color: 'white', border: 'none', borderRadius: '4px', cursor: carregando ? 'not-allowed' : 'pointer', fontSize: '1.1rem' }}
+          style={{ width: '100%', padding: '12px', background: carregando ? '#ff9800' : '#ff9800', color: 'white', border: 'none', borderRadius: '4px', cursor: carregando ? 'not-allowed' : 'pointer', fontSize: '1.1rem' }}
         >
           {carregando ? "Autenticando..." : "Entrar"}
         </button>
 
-        <span style={{ color: '#666' }}>Ainda não tem conta? </span>
+        <span style={{ color: '#706f6f' }}>Ainda não tem conta? </span>
         <Link href="/cadastro" style={{ color: '#ff9800', textDecoration: 'none', fontWeight: 'bold' }}>Crie uma agora!</Link>
       </form>
     </div>

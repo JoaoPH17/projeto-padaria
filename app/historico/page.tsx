@@ -16,12 +16,15 @@ interface Pedido {
   status: string;
   metodo_pagamento: string;
   itens: ItemPedido[];
+  cliente_nome?: string;
 }
 
 export default function HistoricoPedidos() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [mensagem, setMensagem] = useState("");
+  const [ehAdmin, setEhAdmin] = useState(false);
+  const [atualizandoId, setAtualizandoId] = useState<number | null>(null);
 
   useEffect(() => {
     const usuarioSalvo = localStorage.getItem("usuarioLogado");
@@ -32,8 +35,14 @@ export default function HistoricoPedidos() {
     }
 
     const usuario = JSON.parse(usuarioSalvo);
+    const admin = usuario.tipo_usuario === "Administrador";
+    setEhAdmin(admin);
 
-    fetch(`http://127.0.0.1:8000/pedidos/${usuario.id}/historico`)
+    const url = admin
+      ? "http://127.0.0.1:8000/pedidos/todos"
+      : `http://127.0.0.1:8000/pedidos/${usuario.id}/historico`;
+
+    fetch(url)
       .then(res => res.json())
       .then(data => {
         setPedidos(data);
@@ -45,12 +54,37 @@ export default function HistoricoPedidos() {
       });
   }, []);
 
+  const alternarStatus = async (pedido: Pedido) => {
+    const novoStatus = pedido.status === "Concluído" ? "Pendente" : "Concluído";
+    setAtualizandoId(pedido.pedido_id);
+
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/pedidos/${pedido.pedido_id}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: novoStatus })
+      });
+
+      if (res.ok) {
+        setPedidos(pedidos.map(p =>
+          p.pedido_id === pedido.pedido_id ? { ...p, status: novoStatus } : p
+        ));
+      } else {
+        alert("Erro ao atualizar o status do pedido.");
+      }
+    } catch (error) {
+      alert("Erro de conexão com o servidor.");
+    } finally {
+      setAtualizandoId(null);
+    }
+  };
+
   if (carregando) return <div style={{ textAlign: 'center', marginTop: '50px' }}>Carregando seu histórico...</div>;
 
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto', padding: '20px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1>Meus Pedidos 📜</h1>
+        <h1>{ehAdmin ? "Todos os Pedidos ⚙️" : "Meus Pedidos 📜"}</h1>
         <Link href="/catalogo" style={{ textDecoration: 'none', color: '#ff9800' }}>Ir para o Catálogo</Link>
       </div>
 
@@ -62,7 +96,9 @@ export default function HistoricoPedidos() {
 
       {!mensagem && pedidos.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '40px', border: '1px dashed #ccc', borderRadius: '8px' }}>
-          <p style={{ color: '#666' }}>Você ainda não realizou nenhum pedido na nossa padaria.</p>
+          <p style={{ color: '#666' }}>
+            {ehAdmin ? "Nenhum pedido foi realizado ainda." : "Você ainda não realizou nenhum pedido na nossa padaria."}
+          </p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -73,8 +109,21 @@ export default function HistoricoPedidos() {
                 <div>
                   <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Pedido #{pedido.pedido_id}</span>
                   <p style={{ margin: '3px 0 0 0', color: '#666', fontSize: '0.85rem' }}>{pedido.data}</p>
+                  {ehAdmin && pedido.cliente_nome && (
+                    <p style={{ margin: '3px 0 0 0', color: '#1976d2', fontSize: '0.85rem', fontWeight: 'bold' }}>
+                      Cliente: {pedido.cliente_nome}
+                    </p>
+                  )}
                 </div>
-                <span style={{ padding: '5px 10px', borderRadius: '20px', background: '#e8f5e9', color: '#2e7d32', fontWeight: 'bold', fontSize: '0.85rem', alignSelf: 'center' }}>
+                <span style={{
+                  padding: '5px 10px',
+                  borderRadius: '20px',
+                  background: pedido.status === "Concluído" ? '#e8f5e9' : '#fff3e0',
+                  color: pedido.status === "Concluído" ? '#2e7d32' : '#ef6c00',
+                  fontWeight: 'bold',
+                  fontSize: '0.85rem',
+                  alignSelf: 'center'
+                }}>
                   {pedido.status}
                 </span>
               </div>
@@ -95,6 +144,31 @@ export default function HistoricoPedidos() {
                   Total: <strong style={{ color: '#2e7d32' }}>R$ {pedido.valor_total.toFixed(2)}</strong>
                 </span>
               </div>
+
+              {ehAdmin && (
+                <div style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px dashed #eee', display: 'flex', justifyContent: 'flex-end' }}>
+                  <button
+                    onClick={() => alternarStatus(pedido)}
+                    disabled={atualizandoId === pedido.pedido_id}
+                    style={{
+                      padding: '8px 16px',
+                      background: pedido.status === "Concluído" ? '#757575' : '#4CAF50',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: atualizandoId === pedido.pedido_id ? 'not-allowed' : 'pointer',
+                      fontWeight: 'bold',
+                      fontSize: '0.9rem'
+                    }}
+                  >
+                    {atualizandoId === pedido.pedido_id
+                      ? "Atualizando..."
+                      : pedido.status === "Concluído"
+                        ? "Marcar como Pendente"
+                        : "Marcar como Concluído"}
+                  </button>
+                </div>
+              )}
 
             </div>
           ))}
