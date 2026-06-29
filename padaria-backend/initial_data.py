@@ -1,6 +1,8 @@
+import os
 from models import SessionLocal, Produto, Usuario
 
 def popular_banco():
+    print(f"DEBUG: Conectando no banco: {os.getenv('DATABASE_URL')}")
     db = SessionLocal()
     try:
         if db.query(Usuario).count() == 0:
