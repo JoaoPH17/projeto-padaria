@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-padaria-i3yu.onrender.com";
+
 interface ItemCarrinho {
   id: number;
   produto_id: number;
@@ -19,8 +21,9 @@ export default function Carrinho() {
   const [carregando, setCarregando] = useState(true);
   const [mensagem, setMensagem] = useState("");
   const [clienteId, setClienteId] = useState<number | null>(null);
+
   const carregarCarrinho = (id: number) => {
-    fetch(`http://127.0.0.1:8000/carrinho/${id}`)
+    fetch(`${API_URL}/carrinho/${id}`)
       .then(res => {
         if (!res.ok) throw new Error("Carrinho vazio ou não encontrado.");
         return res.json();
@@ -50,7 +53,7 @@ export default function Carrinho() {
 
   const removerItem = async (itemId: number) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/carrinho/item/${itemId}`, {
+      const res = await fetch(`${API_URL}/carrinho/item/${itemId}`, {
         method: "DELETE",
       });
       if (res.ok) {
@@ -72,7 +75,7 @@ export default function Carrinho() {
     if (!window.confirm("Tem certeza que deseja esvaziar todo o carrinho?")) return;
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/carrinho/${clienteId}/limpar`, {
+      const res = await fetch(`${API_URL}/carrinho/${clienteId}/limpar`, {
         method: "DELETE",
       });
       if (res.ok) {

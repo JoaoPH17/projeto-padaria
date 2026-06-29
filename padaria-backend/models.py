@@ -3,8 +3,9 @@ from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+import os
 
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:web123@localhost:5432/padaria_db"
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:web123@localhost:5432/padaria_db")
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

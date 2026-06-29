@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-padaria-i3yu.onrender.com";
+
 interface Produto {
   id: number;
   nome: string;
@@ -23,7 +25,7 @@ export default function ProdutoDetalhes() {
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/produtos/${id}`)
+    fetch(`${API_URL}/produtos/${id}`)
       .then(res => res.json())
       .then(data => {
         setProduto(data);
@@ -53,7 +55,7 @@ export default function ProdutoDetalhes() {
     };
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/carrinho/${clienteId}/adicionar`, {
+      const res = await fetch(`${API_URL}/carrinho/${clienteId}/adicionar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dados)

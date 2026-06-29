@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-padaria-i3yu.onrender.com";
+
 interface ItemPedido {
   nome_produto: string;
   quantidade: number;
@@ -38,11 +40,12 @@ export default function HistoricoPedidos() {
     const admin = usuario.tipo_usuario === "Administrador";
     setEhAdmin(admin);
 
-    const url = admin
-      ? "http://127.0.0.1:8000/pedidos/todos"
-      : `http://127.0.0.1:8000/pedidos/${usuario.id}/historico`;
+const url = admin
+      ? `${API_URL}/pedidos/todos`
+      : `${API_URL}/pedidos/${usuario.id}/historico`;
 
     fetch(url)
+
       .then(res => res.json())
       .then(data => {
         setPedidos(data);
@@ -59,7 +62,7 @@ export default function HistoricoPedidos() {
     setAtualizandoId(pedido.pedido_id);
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/pedidos/${pedido.pedido_id}/status`, {
+      const res = await fetch(`${API_URL}/pedidos/${pedido.pedido_id}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: novoStatus })

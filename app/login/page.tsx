@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-padaria-i3yu.onrender.com";
+
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -17,18 +19,19 @@ export default function Login() {
     setMensagem("");
 
     try {
-      const resposta = await fetch("http://127.0.0.1:8000/login/", {
+      const resposta = await fetch(`${API_URL}/login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, senha }),
       });
 
       if (resposta.ok) {
-        const usuario = await resposta.json();
+        const dadosUsuario = await resposta.json();
         
-        localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
+        localStorage.setItem("tokenPadaria", dadosUsuario.access_token);
+        localStorage.setItem("usuarioLogado", JSON.stringify(dadosUsuario.usuario));
 
-        if (usuario.tipo_usuario.toLowerCase() === "administrador") {
+        if (dadosUsuario.tipo_usuario && dadosUsuario.tipo_usuario.toLowerCase() === "administrador" || dadosUsuario.usuario?.tipo?.toLowerCase() === "administrador") {
           router.push("/admin"); 
         } else {
           router.push("/catalogo");
