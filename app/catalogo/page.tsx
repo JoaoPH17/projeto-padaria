@@ -37,18 +37,27 @@ export default function Catalogo() {
   if (carregando) return <div className="p-10 text-center">Carregando os produtos fresquinhos...</div>;
   if (erro) return <div className="p-10 text-center text-red-500">Não foi possível carregar o catálogo.</div>;
 
-  return (
-    <div className="p-10">
-      <h1 className="text-3xl font-bold mb-6">Nosso Catálogo</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+return (
+    <div className="p-8 max-w-7xl mx-auto">
+      <h1 className="text-3xl font-extrabold text-gray-800 mb-8">Nosso Catálogo</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">  
         {produtos.map(produto => (
-          <div key={produto.id} className="border p-4 rounded shadow">
-            <h2 className="text-xl font-bold">{produto.nome}</h2>
-            <p className="text-gray-600 my-2">{produto.descricao}</p>
-            <p className="text-lg font-semibold mb-4">R$ {produto.preco.toFixed(2)}</p>
-            <Link href={`/produto/${produto.id}`} className="bg-orange-500 text-white px-4 py-2 rounded">
-              Ver Detalhes
-            </Link>
+          <div key={produto.id} className="border border-gray-200 p-6 rounded-xl shadow-sm hover:shadow-lg transition-shadow bg-white flex flex-col justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">{produto.nome}</h2>
+              <p className="text-gray-600 mt-2 mb-4 text-sm">{produto.descricao}</p>
+            </div>
+            <div>
+              <p className="text-2xl font-black text-orange-600 mb-4">
+                R$ {produto.preco.toFixed(2)}
+              </p>
+              <Link 
+                href={`/produto/${produto.id}`} 
+                className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+              >
+                Ver Detalhes
+              </Link>
+            </div>
           </div>
         ))}
       </div>
