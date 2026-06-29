@@ -24,6 +24,8 @@ app.add_middleware(
 def startup_event():
     Base.metadata.create_all(bind=engine)
     print("Tabelas verificadas/criadas com sucesso!")
+    popular_banco() 
+    print("Sistema inicializado com sucesso!")
 
 def get_db():
     db = SessionLocal()
