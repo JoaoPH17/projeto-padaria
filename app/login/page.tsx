@@ -27,19 +27,22 @@ export default function Login() {
 
       if (resposta.ok) {
         const dadosUsuario = await resposta.json();
-        
+
         localStorage.setItem("tokenPadaria", dadosUsuario.access_token);
         localStorage.setItem("usuarioLogado", JSON.stringify(dadosUsuario.usuario));
 
-        if (dadosUsuario.tipo_usuario && dadosUsuario.tipo_usuario.toLowerCase() === "administrador" || dadosUsuario.usuario?.tipo?.toLowerCase() === "administrador") {
-          router.push("/admin"); 
+        if (dadosUsuario.usuario.tipo_usuario.toLowerCase() === "administrador") {
+          router.push("/admin");
         } else {
           router.push("/catalogo");
         }
-        
+
       } else {
         const erro = await resposta.json();
-        setMensagem(erro.detail);
+        const mensagemErro = typeof erro.detail === "string"
+          ? erro.detail
+          : "Não foi possível fazer login. Verifique seus dados.";
+        setMensagem(mensagemErro);
       }
     } catch (error) {
       setMensagem("Erro ao conectar com o servidor.");
@@ -84,7 +87,7 @@ export default function Login() {
         <button 
           type="submit" 
           disabled={carregando}
-          style={{ width: '100%', padding: '12px', background: carregando ? '#ff9800' : '#ff9800', color: 'white', border: 'none', borderRadius: '4px', cursor: carregando ? 'not-allowed' : 'pointer', fontSize: '1.1rem' }}
+          style={{ width: '100%', padding: '12px', background: '#ff9800', color: 'white', border: 'none', borderRadius: '4px', cursor: carregando ? 'not-allowed' : 'pointer', fontSize: '1.1rem' }}
         >
           {carregando ? "Autenticando..." : "Entrar"}
         </button>

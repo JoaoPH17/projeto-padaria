@@ -40,9 +40,9 @@ def criar_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     return use_cases.cadastrar_usuario_uc(usuario, db)
 
 @app.post("/login/")
-def login(email: str, senha: str, db: Session = Depends(get_db)):
-    usuario = db.query(Usuario).filter(Usuario.email == email, Usuario.senha == senha).first()
-    
+def login(dados: LoginInput, db: Session = Depends(get_db)):
+    usuario = db.query(Usuario).filter(Usuario.email == dados.email, Usuario.senha == dados.senha).first()
+
     if not usuario:
         raise HTTPException(status_code=401, detail="Credenciais incorretas")
 
@@ -50,21 +50,21 @@ def login(email: str, senha: str, db: Session = Depends(get_db)):
         "sub": str(usuario.id),
         "tipo_usuario": usuario.tipo_usuario
     }
-    
+
     token_jwt = criar_token(dados_token)
-    
+
     return {
-    "access_token": token_jwt,
-    "token_type": "bearer",
-    "usuario": {
-        "id": usuario.id,
-        "nome": usuario.nome,
-        "tipo": usuario.tipo_usuario,
-        "tipo_usuario": usuario.tipo_usuario,
-        "telefone": usuario.telefone,
-        "endereco_entrega": usuario.endereco_entrega
+        "access_token": token_jwt,
+        "token_type": "bearer",
+        "usuario": {
+            "id": usuario.id,
+            "nome": usuario.nome,
+            "tipo": usuario.tipo_usuario,
+            "tipo_usuario": usuario.tipo_usuario,
+            "telefone": usuario.telefone,
+            "endereco_entrega": usuario.endereco_entrega
+        }
     }
-}
 
 @app.put("/usuarios/{id}")
 def editar_usuario(id: int, dados: UsuarioUpdate, db: Session = Depends(get_db)):
@@ -77,7 +77,7 @@ def listar_produtos(db: Session = Depends(get_db)):
 
 @app.post("/produtos/")
 def criar_produto(produto: ProdutoCreate, db: Session = Depends(get_db), admin_payload: dict = Depends(verificar_admin)):
-    return use_cases.criar_produto_uc(produto, db)
+    return use_cases.adicionar_produto_uc(produto, db)
 
 @app.get("/produtos/{id}")
 def buscar_produto(id: int, db: Session = Depends(get_db)):
