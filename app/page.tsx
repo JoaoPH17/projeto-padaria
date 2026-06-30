@@ -39,7 +39,7 @@ export default function Home() {
           flexShrink: 0
         }}>
           <Image
-            src="/imagens/Padaria_vitrine.jpg"
+            src="/imagens/padaria_vitrine.jpg"
             alt="Vitrine da padaria"
             fill
             style={{ objectFit: 'cover' }}
