@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-padaria-i3yu.onrender.com";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-padaria-gcfu.onrender.com";
 
 interface Produto {
   id: number;

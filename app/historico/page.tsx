@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-padaria-i3yu.onrender.com";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-padaria-gcfu.onrender.com";
 
 interface ItemPedido {
   nome_produto: string;
@@ -40,12 +40,11 @@ export default function HistoricoPedidos() {
     const admin = usuario.tipo_usuario === "Administrador";
     setEhAdmin(admin);
 
-const url = admin
+    const url = admin
       ? `${API_URL}/pedidos/todos`
       : `${API_URL}/pedidos/${usuario.id}/historico`;
 
     fetch(url)
-
       .then(res => res.json())
       .then(data => {
         setPedidos(data);
@@ -107,7 +106,7 @@ const url = admin
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {pedidos.map((pedido) => (
             <div key={pedido.pedido_id} style={{ border: '1px solid #ddd', borderRadius: '8px', padding: '20px', background: '#fff', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
-              
+
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #eee', paddingBottom: '10px', marginBottom: '10px' }}>
                 <div>
                   <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Pedido #{pedido.pedido_id}</span>

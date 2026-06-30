@@ -54,10 +54,17 @@ def login(email: str, senha: str, db: Session = Depends(get_db)):
     token_jwt = criar_token(dados_token)
     
     return {
-        "access_token": token_jwt, 
-        "token_type": "bearer",
-        "usuario": {"nome": usuario.nome, "tipo": usuario.tipo_usuario}
+    "access_token": token_jwt,
+    "token_type": "bearer",
+    "usuario": {
+        "id": usuario.id,
+        "nome": usuario.nome,
+        "tipo": usuario.tipo_usuario,
+        "tipo_usuario": usuario.tipo_usuario,
+        "telefone": usuario.telefone,
+        "endereco_entrega": usuario.endereco_entrega
     }
+}
 
 @app.put("/usuarios/{id}")
 def editar_usuario(id: int, dados: UsuarioUpdate, db: Session = Depends(get_db)):
