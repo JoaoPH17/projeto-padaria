@@ -68,13 +68,13 @@ export default function Catalogo() {
               <Link
                 href={`/produto/${produto.id}`}
                 style={{
-                  display: 'block',
-                  width: '100%',
+                  display: 'inline-block',
                   textAlign: 'center',
                   background: '#ff9800',
                   color: 'white',
                   fontWeight: 'bold',
-                  padding: '10px 16px',
+                  fontSize: '0.85rem',
+                  padding: '6px 14px',
                   borderRadius: '8px',
                   textDecoration: 'none'
                 }}
