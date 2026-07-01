@@ -1,4 +1,4 @@
-# 🍞 Projeto Padaria
+#  Projeto Padaria
 
 Esse é um sistema de compras de uma padaria online. Clientes podem navegar pelo catálogo de produtos, adicionar itens ao carrinho, finalizar pedidos e acompanhar o histórico de compras. Administradores têm acesso a um painel para gerenciar o estoque e atualizar o status dos pedidos.
 
@@ -8,9 +8,9 @@ Esse é um sistema de compras de uma padaria online. Clientes podem navegar pelo
 
 | Serviço | URL |
 |---|---|
-| **Frontend (Vercel)** | https://projeto-padaria.vercel.app |
-| **Backend (Render)** | https://api-padaria-i3yu.onrender.com |
-| **Documentação da API** | https://api-padaria-i3yu.onrender.com/docs |
+| **Frontend (Vercel)** | https://projeto-padaria-nu.vercel.app/ |
+| **Backend (Render)** | https://api-padaria-gcfu.onrender.com|
+| **Documentação da API** | https://api-padaria-gcfu.onrender.com/docs |
 
 > **Credenciais de teste:**
 >
