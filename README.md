@@ -9,8 +9,7 @@ Esse é um sistema de compras de uma padaria online. Clientes podem navegar pelo
 | Serviço | URL |
 |---|---|
 | **Frontend (Vercel)** | https://projeto-padaria-nu.vercel.app/ |
-| **Backend (Render)** | https://api-padaria-gcfu.onrender.com|
-| **Documentação da API** | https://api-padaria-gcfu.onrender.com/docs |
+| **Documentação da API (Render)** | https://api-padaria-gcfu.onrender.com/docs |
 
 > **Credenciais de teste:**
 >
